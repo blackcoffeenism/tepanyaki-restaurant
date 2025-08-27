@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="card">
+  <div class="card-header">
+    <h2>Online Reach (Last 7 Days)</h2>
+  </div>
+  <div class="card-body">
+    <canvas id="reachChart" height="90"></canvas>
+  </div>
+</section>
+
+<section class="card mt">
+  <div class="card-header">
+    <h2>Menu</h2>
+  </div>
+  <div class="grid">
+    {% for m in menu %}
+    <article class="menu-card">
+      <img src="{{ m.image }}" alt="{{ m.name }}" class="menu-img" />
+      <div class="menu-meta">
+        <div class="menu-title">{{ m.name }}</div>
+        <div class="menu-price">{{ price_fmt(m.price_cents) }}</div>
+      </div>
+      {% if m.description %}
+      <p class="menu-desc">{{ m.description }}</p>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<script>
+  const ctx = document.getElementById('reachChart');
+  const data = {
+    labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+    datasets: [{
+      label: 'Reached Potential Customers',
+      data: {{ reach | tojson }},
+      backgroundColor: 'rgba(59,130,246,0.3)',
+      borderColor: 'rgba(59,130,246,1)',
+      borderWidth: 2,
+      borderRadius: 6,
+    }]
+  };
+  new Chart(ctx, { type: 'bar', data, options: { responsive: true, scales: { y: { beginAtZero: true }}}});
+</script>
+{% endblock %}

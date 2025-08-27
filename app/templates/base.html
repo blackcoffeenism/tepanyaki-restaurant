@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ request.app.title }}</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">🍽️ Resto Manager</div>
+    <nav class="tabs">
+      <a href="/dashboard" class="tab {{ 'active' if request.url.path.startswith('/dashboard') else '' }}">Dashboard</a>
+      <a href="/manage" class="tab {{ 'active' if request.url.path.startswith('/manage') else '' }}">Manage</a>
+    </nav>
+  </header>
+
+  {% if msg or request.query_params.get('msg') %}
+  <div class="toast success" id="toast">{{ msg or request.query_params.get('msg') }}</div>
+  {% elif err or request.query_params.get('err') %}
+  <div class="toast error" id="toast">{{ err or request.query_params.get('err') }}</div>
+  {% endif %}
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">© {{ 2025 }} Resto Manager • Tepanyaki</footer>
+  <script src="/static/app.js"></script>
+</body>
+</html>

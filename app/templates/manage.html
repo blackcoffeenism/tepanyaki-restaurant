@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="grid-2">
+  <div class="card">
+    <div class="card-header"><h2>Add Menu</h2></div>
+    <form class="form" action="/menu" method="post" enctype="multipart/form-data">
+      <label>Name<input required name="name" placeholder="e.g., Margherita Pizza" /></label>
+      <label>Price (PHP)<input required name="price" type="number" min="0" step="0.01" placeholder="199.00" /></label>
+      <label>Image File<input name="image_file" type="file" accept="image/*" /></label>
+      <label>OR Image URL<input name="image_url" type="url" placeholder="https://..." /></label>
+      <label>Description<textarea name="description" rows="3" placeholder="Short description (optional)"></textarea></label>
+      <div class="actions"><button class="btn primary" type="submit">Add Menu</button></div>
+    </form>
+  </div>
+
+  <div class="card" id="services">
+    <div class="card-header"><h2>Add Services (Event Place)</h2></div>
+    <form class="form" action="/services" method="post" enctype="multipart/form-data">
+      <label>Name<input required name="name" placeholder="e.g., Grand Ballroom" /></label>
+      <label>Price (PHP)<input required name="price" type="number" min="0" step="0.01" placeholder="5000.00" /></label>
+      <label>Image File<input name="image_file" type="file" accept="image/*" /></label>
+      <div class="actions"><button class="btn primary" type="submit">Add Service</button></div>
+    </form>
+
+    {% if services %}
+    <div class="subtle">
+      <h3 class="mt">Existing Services</h3>
+      <ul class="list">
+        {% for s in services %}
+          <li><img class="avatar" src="{{ s.image }}" alt=""/> {{ s.name }} — <strong>{{ price_fmt(s.price_cents) }}</strong></li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="card mt">
+  <div class="card-header">
+    <h2>Menu (Hover for actions)</h2>
+  </div>
+  <div class="grid">
+    {% for m in menu %}
+    <article class="menu-card hoverable">
+      <img src="{{ m.image }}" alt="{{ m.name }}" class="menu-img" />
+      <div class="menu-meta">
+        <div class="menu-title">{{ m.name }}</div>
+        <div class="menu-price">{{ price_fmt(m.price_cents) }}</div>
+      </div>
+      {% if m.description %}
+      <p class="menu-desc">{{ m.description }}</p>
+      {% endif %}
+      <div class="overlay">
+        <a class="btn ghost" href="/menu/{{ m.id }}/edit">Edit</a>
+        <form action="/menu/{{ m.id }}/delete" method="post" onsubmit="return confirmDelete(event)">
+          <button class="btn danger" type="submit">Delete</button>
+        </form>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
